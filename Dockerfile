@@ -2,6 +2,8 @@ FROM google/cloud-sdk:alpine
 
 ENV HELM_VERSION v2.14.0
 ENV SOPS_VERSION 3.3.0
+ENV HELM_GCS_VERSION 0.2.0
+ENV HELM_HOME /home/jenkins/
 
 WORKDIR /tmp
 
@@ -15,9 +17,11 @@ RUN apk --no-cache update && \
     rm -rf /var/cache/apk/* && \
     rm -rf /tmp/linux-amd64 && \
     helm init --client-only && \
-    helm plugin install https://github.com/hayorov/helm-gcs.git && \
+    helm plugin install https://github.com/hayorov/helm-gcs.git --version $HELM_GCS_VERSION && \
     helm plugin install https://github.com/databus23/helm-diff.git && \
     helm plugin install https://github.com/futuresimple/helm-secrets.git && \
     helm version --client && \
     helm plugin list && \
     gcloud info
+
+WORKDIR /home/jenkins/
